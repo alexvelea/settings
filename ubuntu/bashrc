@@ -1,5 +1,10 @@
-export latest_path=""s
+export latest_path=""
 export num_without_path=0
+
+clear() {
+    num_without_path=5
+    /usr/bin/clear
+}
 
 ParseGitBranch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
