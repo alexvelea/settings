@@ -1,5 +1,6 @@
 export latest_path=""
 export num_without_path=0
+export show_path_once_every=1
 
 clear() {
     num_without_path=5
@@ -22,7 +23,7 @@ ShortPwd() {
 }
 
 GetPS() {
-    if [[ "$PWD" == "$latest_path" && $((num_without_path)) < 5 ]];
+    if [[ "$PWD" == "$latest_path" && $((num_without_path)) < $((show_path_once_every-1)) ]];
     then
         num_without_path=$((num_without_path+1))
         PS1="$ "
@@ -34,6 +35,10 @@ GetPS() {
 }
 
 PROMPT_COMMAND='GetPS'
+
+title() {
+    PROMPT_COMMAND='echo -ne "\033]0;'$1'\007"'
+}
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
