@@ -16,13 +16,13 @@ filetype plugin indent on    " required
 " Glogal YCM file because it's fun
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'  
 
-colorscheme base16-railscasts
+try
+	colorscheme base16-railscasts
+catch /^Vim\%((\a\+)\)\=:E185/
+endtry
 
 " Set color stuff
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
+let base16colorspace=256
 
 set wildmenu
 set wildmode=longest:full,full
