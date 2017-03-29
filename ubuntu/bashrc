@@ -45,14 +45,26 @@ BASE16_SHELL=$HOME/.config/base16-shell/
 
 stty -ixon #ubuntu allows control-s and shit
 
-alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all"
-alias 5="md5"
-alias shitSlow="pkill -15 -u velea"
-alias ll="ls -Al"
+alias add="git add $a"
+alias commit="git commit $a"
+alias diff="git difftool $a"
+alias pull="git pull --rebase $a"
+alias push="git push $a"
+alias status="git status $a"
+
+alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -v"
+alias 5="md5sum"
+alias shitSlow="pkill -9 -u velea"
+alias ll="ls -Alh"
 alias size="ls -lR | awk '{s+=$5} END {print s}'"
 
+alias gedit="gedit $a 2>&1 1>/dev/null"
+alias nautilus="nautilus $a 2>/dev/null 1>/dev/null"
+
 sudo() {
-    echo "The Doors of Durin, Lord of Moria. Speak, friend, and enter."
+    if ! (command sudo -n true 2>/dev/null); then
+        echo "The Doors of Durin, Lord of Moria. Speak, friend, and enter."
+    fi
     command sudo "$@"
 }
 
@@ -93,15 +105,13 @@ echo "---------------------------------------------------"
 #dirsize - finds directory sizes and lists them for the current directory
 dirsize ()
 {
-du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
-egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
-egrep '^ *[0-9.]*M' /tmp/list
-egrep '^ *[0-9.]*G' /tmp/list
-rm -rf /tmp/list
+    if [ "$#" == 0 ]; then
+        all="*"
+    else
+        all=$@
+    fi
+    du -skh $all | sort -n
 }
-
-alias csa="cd ~/work/CSAcademy/csacademy/"
-alias runserver="autossh -f -M 0 -N -L 15432:localhost:5432 root@linode-dev; autossh -f -M 0 -N -L 16379:localhost:6379 root@linode-dev; python manage.py runserver"
 
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 export HISTSIZE=100000                   # big big history
@@ -116,7 +126,7 @@ viewmd() {
 }
 
 comp() {
-    g++ -std=c++14 -O2 -Wall $1 -o _${1%%.*} -lm 
+    time g++ -std=c++14 -O2 -Wall $1 -o _${1%%.*} -lm 
 }
 
 exec() {
