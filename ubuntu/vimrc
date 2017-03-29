@@ -10,19 +10,60 @@ Plugin 'Valloric/YouCompleteMe'
 
 Plugin 'chriskempson/base16-vim'
 
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'airblade/vim-gitgutter'
+
 call vundle#end()            " required
 filetype plugin indent on    " required
+filetype plugin on
 
 " Glogal YCM file because it's fun
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'  
+" Fix Python Path (for YCM)
+let g:ycm_path_to_python_interpreter="/usr/bin/python"
 
-try
-	colorscheme base16-railscasts
-catch /^Vim\%((\a\+)\)\=:E185/
-endtry
+let g:clang_use_library=1
+let g:clang_debug = 1
 
 " Set color stuff
-let base16colorspace=256
+colorscheme base16-railscasts
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
+
+map = :py3f ~/.vim/clang-format.py<cr>
+imap <C-i> <c-o>:py3f ~/.vim/clang-format.py<cr>
+
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+
+" nerdtree
+let g:NERDTreeShowGitStatus = 1
+let g:NERDTreeUpdateOnWrite = 1
+let g:NERDTreeShowIgnoredStatus = 1
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ "Unknown"   : "?"
+    \ }
+
+autocmd vimenter * NERDTree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+autocmd VimEnter * wincmd p
+
+set incsearch
+set hlsearch
 
 set wildmenu
 set wildmode=longest:full,full
@@ -40,7 +81,7 @@ set smartindent
 set invnumber
 set wrap
 
-set mouse=i
+set mouse=a
 set splitbelow
 set splitright
 set autoread
@@ -50,19 +91,38 @@ syntax on
 " Move paste toggle to Ctrl + B
 set pastetoggle=<C-b>
 
-" Basic mappings
-" keep this here, legacy shit
-map <F2> :w<CR>i
-imap <F2> <Esc>:w<Cr>i<Right>
+" ~~~~~~~~~~
+" Generic good hotkeys
 
+" Save
 map <C-s> :w<CR>i
 imap <C-s> <Esc>:w<CR>i<Right>
 
-map <C-o> :tabnew<CR>:e  
-imap <C-o> <ESC>:tabnew<CR>:e 
+" Open
+noremap <C-o> :tabnew<CR>:NERDTree<CR>/
+inoremap <C-o> <ESC>:tabnew<CR>:NERDTree<CR>/
 
+" Quit window
 map <C-w> :q <CR>
-imap <C-w> <ESC>:q <CR>i
+imap <C-w> <ESC>:q<CR>i
+
+" Quit all
+map <C-q> :qa <CR>
+imap <C-q> <ESC>:qa<CR>
+
+" Undo
+map <C-z> u
+imap <C-z> <ESC>ui
+
+" Redo
+imap <C-r> <ESC><C-r>i
+
+" Move between windows
+map <A-[> :tabprev<CR>
+imap <A-[> <ESC>:tabprev<CR>i
+
+map <A-]> :tabnext<CR>
+imap <A-]> <ESC>:tabnext<CR>i
 
 map <F3> :tabprev<CR>
 imap <F3> <ESC>:tabprev<CR>i
@@ -70,27 +130,20 @@ imap <F3> <ESC>:tabprev<CR>i
 map <F4> :tabnext<CR>
 imap <F4> <ESC>:tabnext<CR>i
 
+
+
 " Do you really want to press <F5>? no .. you don't
 imap <F1> <ESC>i
 imap <F5> <ESC>i
 imap <F6> <ESC>i
 imap <F7> <ESC>i
+imap <F8> <ESC>i
+imap <F9> <ESC>i
 
-map <F10> :!gedit % & <CR>i
-imap <F10> <ESC>:!gedit % & <CR>i
+map <F10> :!subl % 1>/dev/null 2>/dev/null & <CR>i
+imap <F10> <ESC>:!subl % 1>/dev/null 2>/dev/null & <CR>i
 
-map <A-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
-imap <A-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
-
-map <A-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
-imap <A-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
-
-map <A-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
-imap <A-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
-
-map <A-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
-imap <A-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
- 
+" move more fast in windows
 map <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
 imap <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
 
@@ -103,23 +156,36 @@ imap <C-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 map <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
 imap <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
 
-map <F8> :!clear<CR>i
-imap <F8> <ESC>:!clear<CR>i
+" move between buffers.
+" the default is C-W + hljk or left down up right
+noremap <A-Up> <C-w><Up>
+imap <A-Up> <ESC><A-Up>i
+noremap <A-Down> <C-w><Down>
+imap <A-Down> <ESC><A-Down>i
+noremap <A-Left> <C-w><Left>
+imap <A-Left> <ESC><A-Left>i
+noremap <A-Right> <C-w><Right>
+imap <A-Right> <ESC><A-Right>i
 
-" C/C++ compilation
-autocmd FileType c setlocal makeprg=gcc\ -g\ -O2\ -Wall\ %\ -o\ _%<\ -lm
-autocmd FileType cpp setlocal makeprg=g++\ -std=c++14\ -O2\ -Wall\ %\ -o\ _%<\ -lm
+" Compile for c/cpp
+autocmd FileType c,cpp map <C-c> :!clear<CR>:!time g++ -std=c++14 -O2 -fsyntax-only -Wall % -lm <CR>
+autocmd FileType c,cpp imap <C-c> <ESC> <C-c>
 
-autocmd FileType c,cpp map <buffer> <F8> :!clear<CR>:make!<CR>
-autocmd FileType c,cpp imap <buffer> <F8> <ESC>:!clear<CR>:make!<CR>
+" Build for c/cpp
+autocmd FileType c setlocal makeprg=time\ gcc\ -g\ -O2\ -Wall\ %\ -o\ _%<\ -lm
+autocmd FileType cpp setlocal makeprg=time\ g++\ -std=c++14\ -O2\ -Wall\ %\ -o\ _%<\ -lm
 
-imap <F9> <ESC> <F9>
+autocmd FileType c,cpp map <C-b> :!clear<CR>:make!<CR>
+autocmd FileType c,cpp imap <C-b> <ESC><C-b>
+
+imap <C-r> <ESC><C-r>
 
 " Running C/ C++
-autocmd FileType c,cpp map <buffer> <F9> :!clear<CR>:make!<cr>:!time ./_%< <CR>
+autocmd FileType c,cpp map <C-r> :!clear<CR>:make!<cr>:!time ./_%< <CR>
 
 " Running Python
-autocmd FileType python map <buffer> <F9> :!clear<CR>:!time python3 % <CR>
+autocmd FileType python map <C-r> :!clear<CR>:!time python3 % <CR>
 
 " Running Bash
-autocmd FileType bash,sh map <buffer> <F9> :!clear<CR>:!time ./% <CR>
+autocmd FileType bash,sh map <C-r> :!clear<CR>:!time ./% <CR>
+
