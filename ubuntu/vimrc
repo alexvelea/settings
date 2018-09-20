@@ -7,9 +7,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'Valloric/YouCompleteMe'
-
-Plugin 'chriskempson/base16-vim'
-
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'airblade/vim-gitgutter'
@@ -26,13 +23,7 @@ let g:ycm_path_to_python_interpreter="/usr/bin/python"
 let g:clang_use_library=1
 let g:clang_debug = 1
 
-" Set color stuff
-colorscheme base16-railscasts
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
-
+colorscheme railscasts
 map = :py3f ~/.vim/clang-format.py<cr>
 imap <C-i> <c-o>:py3f ~/.vim/clang-format.py<cr>
 

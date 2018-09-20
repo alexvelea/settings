@@ -1,3 +1,5 @@
+alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all"
+
 export latest_path=""
 export num_without_path=0
 export show_path_once_every=1
@@ -30,7 +32,13 @@ GetPS() {
     else
         num_without_path=0
         latest_path=$PWD
-        PS1='\u@\h\[\033[32m\]:$(ShortPwd)\[\033[33m\]$(ParseGitBranch)\[\033[00m\] $ '
+        if [[ "$USER" == "velea" ]];
+        then
+            PS1=""
+        else
+            PS1="\[\033[31m\]\u\[\033[00m\]@"
+        fi
+        PS1+='\[\033[34m\]iris\[\033[00m\]:\[\033[32m\]$(ShortPwd)\[\033[33m\]$(ParseGitBranch)\[\033[00m\] $ '
     fi
 }
 
