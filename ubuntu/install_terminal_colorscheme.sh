@@ -1,6 +1,7 @@
 #!/bin/bash
-git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
-./base16_railscasts.sh
+mkdir -p ~/.config/kitty/
+cp ./kitty-theme.conf ~/.config/kitty/theme.conf
+echo "include ./theme.conf" >> ~/.config/kitty/theme.conf
 
 echo "#################################################"
 echo "###                                           ###"

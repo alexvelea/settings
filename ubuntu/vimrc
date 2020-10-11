@@ -10,6 +10,7 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'doums/darcula'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -18,12 +19,14 @@ filetype plugin on
 " Glogal YCM file because it's fun
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'  
 " Fix Python Path (for YCM)
-let g:ycm_path_to_python_interpreter="/usr/bin/python"
+let g:ycm_path_to_python_interpreter="/usr/bin/python3.8"
 
 let g:clang_use_library=1
 let g:clang_debug = 1
 
-colorscheme railscasts
+colorscheme darcula
+set termguicolors
+
 map = :py3f ~/.vim/clang-format.py<cr>
 imap <C-i> <c-o>:py3f ~/.vim/clang-format.py<cr>
 
@@ -31,10 +34,10 @@ let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 
 " nerdtree
-let g:NERDTreeShowGitStatus = 1
-let g:NERDTreeUpdateOnWrite = 1
-let g:NERDTreeShowIgnoredStatus = 1
-let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusEnable = 1
+let g:NERDTreeGitStatusUpdateOnWrite = 1
+let g:NERDTreeGitStatusShowIgnored = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -83,7 +86,6 @@ syntax on
 set pastetoggle=<C-b>
 
 " ~~~~~~~~~~
-" Generic good hotkeys
 
 " Save
 map <C-s> :w<CR>i
@@ -92,14 +94,6 @@ imap <C-s> <Esc>:w<CR>i<Right>
 " Open
 noremap <C-o> :tabnew<CR>:NERDTree<CR>/
 inoremap <C-o> <ESC>:tabnew<CR>:NERDTree<CR>/
-
-" Quit window
-map <C-w> :q <CR>
-imap <C-w> <ESC>:q<CR>i
-
-" Quit all
-map <C-q> :qa <CR>
-imap <C-q> <ESC>:qa<CR>
 
 " Undo
 map <C-z> u
@@ -114,25 +108,6 @@ imap <A-[> <ESC>:tabprev<CR>i
 
 map <A-]> :tabnext<CR>
 imap <A-]> <ESC>:tabnext<CR>i
-
-map <F3> :tabprev<CR>
-imap <F3> <ESC>:tabprev<CR>i
-
-map <F4> :tabnext<CR>
-imap <F4> <ESC>:tabnext<CR>i
-
-
-
-" Do you really want to press <F5>? no .. you don't
-imap <F1> <ESC>i
-imap <F5> <ESC>i
-imap <F6> <ESC>i
-imap <F7> <ESC>i
-imap <F8> <ESC>i
-imap <F9> <ESC>i
-
-map <F10> :!subl % 1>/dev/null 2>/dev/null & <CR>i
-imap <F10> <ESC>:!subl % 1>/dev/null 2>/dev/null & <CR>i
 
 " move more fast in windows
 map <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
@@ -157,10 +132,6 @@ noremap <A-Left> <C-w><Left>
 imap <A-Left> <ESC><A-Left>i
 noremap <A-Right> <C-w><Right>
 imap <A-Right> <ESC><A-Right>i
-
-" Compile for c/cpp
-autocmd FileType c,cpp map <C-c> :!clear<CR>:!time g++ -std=c++14 -O2 -fsyntax-only -Wall % -lm <CR>
-autocmd FileType c,cpp imap <C-c> <ESC> <C-c>
 
 " Build for c/cpp
 autocmd FileType c setlocal makeprg=time\ gcc\ -g\ -O2\ -Wall\ %\ -o\ _%<\ -lm
