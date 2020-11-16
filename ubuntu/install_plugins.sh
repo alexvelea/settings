@@ -4,7 +4,8 @@ full_path=$(realpath $0)
 dir_path=$(dirname $full_path)
 
 echo "Copy vim plugins config files"
-cp $dir_path/ycm_extra_conf.py   ~/.vim/.ycm_extra_conf.py
+cp $dir_path/vimrc-plugins        ~/.vimrc-plugins
+cp $dir_path/ycm_extra_conf.py    ~/.vim/.ycm_extra_conf.py
 cp $dir_path/clang-format.py      ~/.vim/
 cp $dir_path/clang-format-rules   ~/.clang-format
 
