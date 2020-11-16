@@ -1,10 +1,18 @@
-alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all"
-export GOROOT=$HOME/projects/go
+alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -v"
+alias ll="ls -Alh --color=auto"
 
-ParseGitBranch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
+if [ -f "HOMESED/.bashrc-work" ]; then
+    source HOMESED/.bashrc-work
+fi
 
+
+# Kitty overrides
+if [[ "$TERM" == "xterm-kitty" ]]; then
+    alias ssh="kitty +kitten ssh"
+fi
+
+# Print nice header
+ParseGitBranch() { git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'; }
 ShortPwd() {
     case $PWD in
         $HOME) HPWD="~";;
@@ -15,47 +23,31 @@ ShortPwd() {
     esac; 
     echo $HPWD
 }
-
-GetPS() {
-	# user
-	if [[ "$USER" == "salsa" ]];
-	then
-		PS1="\e[37m\u\e[39m@"
-	else
-		PS1="\e[31m\u\e[39m@"
-	fi
-	# @hostname:path (gitbranch) $
-	PS1+='\[\033[34m\]$(hostname)\[\033[00m\]:\[\033[32m\]$(ShortPwd)\[\033[33m\]$(ParseGitBranch)\[\033[00m\] $ '
-}
-
+GetPS() { # user + @hostname:path (gitbranch) $
+    if [[ "$USER" == "root" ]]; then PS1="\e[31m\u\e[39m@"; else PS1="\e[37m\u\e[39m@"; fi
+	PS1+='\[\033[34m\]$(hostname)\[\033[00m\]:\[\033[32m\]$(ShortPwd)\[\033[33m\]$(ParseGitBranch)\[\033[00m\] $ '; }
 PROMPT_COMMAND='GetPS'
 
 title() {
     PROMPT_COMMAND='echo -ne "\033]0;'$1'\007"'
 }
 
-
+# Ubuntu stuff
 stty -ixon #ubuntu allows control-s and shit
-alias vgrind="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -v"
-alias shitSlow="pkill -9 -u velea"
-alias ll="ls -Alh --color=auto"
-alias size="ls -lR | awk '{s+=$5} END {print s}'"
-
 alias gedit="gedit $a 2>&1 1>/dev/null"
 alias nautilus="nautilus $a 2>/dev/null 1>/dev/null"
 
 # Print nice message for sudo
 sudo() {
-    if ! (command sudo -n true 2>/dev/null); then
-        echo "The Doors of Durin, Lord of Moria. Speak, friend, and enter."
-    fi
-    command sudo "$@"
+    if ! (command sudo -n true 2>/dev/null); then echo "The Doors of Durin, Lord of Moria. Speak, friend, and enter."; fi
+    command /usr/bin/sudo "$@"
 }
 
-# extract most files
+# Extract most files
 extract () {
      if [ -f $1 ] ; then
          case $1 in
+             *.tar.xz)    tar xf $1 ;;
              *.tar.bz2)   tar xjf $1        ;;
              *.tar.gz)    tar xzf $1     ;;
              *.bz2)       bunzip2 $1       ;;
@@ -74,9 +66,8 @@ extract () {
      fi
 }
 
-#dirsize - finds directory sizes and lists them for the current directory
-dirsize ()
-{
+# Finds directory sizes and lists them for the current directory
+dirsize () {
     if [ "$#" == 0 ]; then
         all="*"
     else
@@ -111,9 +102,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'

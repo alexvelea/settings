@@ -1,0 +1,53 @@
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'doums/darcula'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+filetype plugin on
+
+" Glogal YCM file because it's fun
+let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'  
+" Fix Python Path (for YCM)
+let g:ycm_path_to_python_interpreter="/usr/bin/python3.8"
+
+let g:clang_use_library=1
+let g:clang_debug = 1
+
+colorscheme darcula
+set termguicolors
+
+autocmd FileType c,cpp map = :py3f ~/.vim/clang-format.py<cr>
+
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+
+" nerdtree
+let g:NERDTreeGitStatusEnable = 1
+let g:NERDTreeGitStatusUpdateOnWrite = 1
+let g:NERDTreeGitStatusShowIgnored = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ "Unknown"   : "?"
+    \ }
+
+autocmd vimenter * NERDTree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd VimEnter * wincmd p
+

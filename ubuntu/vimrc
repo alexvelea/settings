@@ -1,60 +1,21 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+let $VIM_PLUGINS = 'HOMESED/.vimrc-plugins'
+if filereadable(expand($VIM_PLUGINS))
+  source $VIM_PLUGINS
+else
+    " Fallback to just static-darcula theme
+    let $VIM_COLORSCHEME = "HOMESED/.vim/colors/darcula.vim"
+    if filereadable(expand($VIM_COLORSCHEME))
+        colorscheme darcula
 
-Plugin 'VundleVim/Vundle.vim'
-
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'doums/darcula'
-
-call vundle#end()            " required
-filetype plugin indent on    " required
-filetype plugin on
-
-" Glogal YCM file because it's fun
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'  
-" Fix Python Path (for YCM)
-let g:ycm_path_to_python_interpreter="/usr/bin/python3.8"
-
-let g:clang_use_library=1
-let g:clang_debug = 1
-
-colorscheme darcula
-set termguicolors
-
-map = :py3f ~/.vim/clang-format.py<cr>
-imap <C-i> <c-o>:py3f ~/.vim/clang-format.py<cr>
-
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-
-" nerdtree
-let g:NERDTreeGitStatusEnable = 1
-let g:NERDTreeGitStatusUpdateOnWrite = 1
-let g:NERDTreeGitStatusShowIgnored = 1
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ "Unknown"   : "?"
-    \ }
-
-autocmd vimenter * NERDTree
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-autocmd VimEnter * wincmd p
+        " Fix for mac default terminal
+        if $TERM isnot# 'xterm-256color'
+            set termguicolors
+        endif
+    endif
+endif
 
 set incsearch
 set hlsearch
@@ -85,42 +46,11 @@ syntax on
 " Move paste toggle to Ctrl + B
 set pastetoggle=<C-b>
 
-" ~~~~~~~~~~
-
-" Save
-map <C-s> :w<CR>i
-imap <C-s> <Esc>:w<CR>i<Right>
-
-" Open
-noremap <C-o> :tabnew<CR>:NERDTree<CR>/
-inoremap <C-o> <ESC>:tabnew<CR>:NERDTree<CR>/
-
 " Undo
 map <C-z> u
 imap <C-z> <ESC>ui
-
 " Redo
 imap <C-r> <ESC><C-r>i
-
-" Move between windows
-map <A-[> :tabprev<CR>
-imap <A-[> <ESC>:tabprev<CR>i
-
-map <A-]> :tabnext<CR>
-imap <A-]> <ESC>:tabnext<CR>i
-
-" move more fast in windows
-map <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
-imap <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
-
-map <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
-imap <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
-
-map <C-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
-imap <C-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
-
-map <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
-imap <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
 
 " move between buffers.
 " the default is C-W + hljk or left down up right
@@ -135,7 +65,7 @@ imap <A-Right> <ESC><A-Right>i
 
 " Build for c/cpp
 autocmd FileType c setlocal makeprg=time\ gcc\ -g\ -O2\ -Wall\ %\ -o\ _%<\ -lm
-autocmd FileType cpp setlocal makeprg=time\ g++\ -std=c++14\ -O2\ -Wall\ %\ -o\ _%<\ -lm
+autocmd FileType cpp setlocal makeprg=time\ c++\ -std=c++14\ -O2\ -Wall\ %\ -o\ _%<\ -lm
 
 autocmd FileType c,cpp map <C-b> :!clear<CR>:make!<CR>
 autocmd FileType c,cpp imap <C-b> <ESC><C-b>
@@ -144,10 +74,29 @@ imap <C-r> <ESC><C-r>
 
 " Running C/ C++
 autocmd FileType c,cpp map <C-r> :!clear<CR>:make!<cr>:!time ./_%< <CR>
-
 " Running Python
 autocmd FileType python map <C-r> :!clear<CR>:!time python3 % <CR>
-
 " Running Bash
 autocmd FileType bash,sh map <C-r> :!clear<CR>:!time ./% <CR>
 
+" Move faster
+ map <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
+ map <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
+ map <C-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+ map <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
+imap <C-Up> <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
+imap <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
+imap <C-Left> <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+imap <C-Right> <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
+
+" Evil osx shortcuts. There is no home/end/pageup/pagedown.
+" terminal -> config -> keyboard -> bind any keys to generate
+" alt + hjlk in order left, up, right, down
+ map ˙ <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+ map ∆ <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
+ map ˚ <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
+ map ¬ <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
+imap ˙ <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+imap ∆ <Up><Up><Up><Up><Up><Up><Up><Up><Up><Up>
+imap ˚ <Right><Right><Right><Right><Right><Right><Right><Right><Right><Right>
+imap ¬ <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
