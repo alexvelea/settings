@@ -17,10 +17,7 @@ echo "Installing plugins"
 vim -c PluginInstall -c qa
 
 
-if ! which cmake >/dev/null ; then
-    echo "Installing cmake"
-    sudo apt-get install -y cmake
-fi
+sudo apt-get install -y cmake clang clang-format clang-tidy python3.8-dev python3.8
 
 mkdir -p ~/.config/kitty/
 cp $dir_path/kitty-theme.conf ~/.config/kitty/theme.conf
